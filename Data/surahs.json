@@ -1,0 +1,5 @@
+[
+    {"number": 1, "name": "Al-Fatiha (الفاتحة)", "englishName": "The Opening", "verses": 7, "arabicText": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ...", "audioUrl": "https://cdn.alquran.cloud/media/audio/1.mp3"},
+    {"number": 2, "name": "Al-Baqarah (البقرة)", "englishName": "The Cow", "verses": 286, "arabicText": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ الم...", "audioUrl": "https://cdn.alquran.cloud/media/audio/2.mp3"},
+    {"number": 3, "name": "Aal-E-Imran (آل عمران)", "englishName": "The Family of Imran", "verses": 200, "arabicText": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ...", "audioUrl": "https://cdn.alquran.cloud/media/audio/3.mp3"}
+]

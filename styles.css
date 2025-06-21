@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('../assets/pattern.jpg') repeat;
+    background-color: #e8f0e9;
+    color: #333;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        #2e5d55,
+        #2e5d55 10px,
+        #1a3c34 10px,
+        #1a3c34 20px
+    );
+    opacity: 0.1;
+    z-index: -1;
+    display: none; /* Shown only if pattern.jpg fails */
+}
+
+header {
+    background: linear-gradient(135deg, #1a3c34, #2e5d55);
+    color: white;
+    text-align: center;
+    padding: 1em;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.navbar {
+    background-color: #2e5d55;
+    padding: 0.5em;
+    animation: slideIn 1s ease-out;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.navbar li {
+    margin: 0 1em;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.navbar a:hover {
+    background-color: #f4d03f;
+    color: #1a3c34;
+    transform: scale(1.1);
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+main {
+    max-width: 1200px;
+    margin: 2em auto;
+    padding: 0 1em;
+}
+
+.hero {
+    background: url('../assets/pattern.jpg') center/cover;
+    padding: 4em 2em;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.hero h2 {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+}
+
+.prayer-widget {
+    background-color: rgba(255,255,255,0.9);
+    padding: 1em;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1em;
+}
+
+.card {
+    background-color: rgba(255,255,255,0.9);
+    padding: 1.5em;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5em 1em;
+    background-color: #2e5d55;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0.5em;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #f4d03f;
+    color: #1a3c34;
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s, transform 0.6s;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+    text-align: left;
+}
+
+th {
+    background-color: #2e5d55;
+    color: white;
+}
+
+audio {
+    width: 100%;
+    margin-top: 0.5em;
+}
+
+.verse-highlight {
+    background-color: #f4d03f;
+    padding: 0.2em;
+    border-radius: 3px;
+}
+
+.toggle-btn {
+    background-color: #f4d03f;
+    color: #333;
+    border: none;
+    padding: 0.5em;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.timeline {
+    position: relative;
+    padding: 2em 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #2e5d55;
+    transform: translateX(-50%);
+}
+
+.timeline-event {
+    background-color: rgba(255,255,255,0.9);
+    padding: 1em;
+    margin: 1em 0;
+    border-radius: 5px;
+    position: relative;
+    width: 45%;
+}
+
+.timeline-event:nth-child(odd) {
+    left: 0;
+}
+
+.timeline-event:nth-child(even) {
+    left: 55%;
+}
+
+.arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.2em;
+    direction: rtl;
+}
+
+footer {
+    text-align: center;
+    padding: 1em;
+    background-color: #1a3c34;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .navbar ul {
+        flex-direction: column;
+    }
+    .navbar li {
+        margin: 0.5em 0;
+    }
+    .hero {
+        padding: 2em 1em;
+    }
+    .timeline::before {
+        left: 20px;
+    }
+    .timeline-event {
+        width: 80%;
+        left: 40px !important;
+    }
+}

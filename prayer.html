@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeenStream - Prayer Times (الصلاة)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>DeenStream - Prayer Times (الصلاة)</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quran.html">Qur’an (القرآن)</a></li>
+                <li><a href="hadith.html">Hadith (الحديث)</a></li>
+                <li><a href="prayer.html">Prayer Times (الصلاة)</a></li>
+                <li><a href="calendar.html">Calendar (التقويم)</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Prayer Times (الصلاة)</h2>
+        <select id="city-select" onchange="updatePrayerTimes()">
+            <option value="karachi">Karachi</option>
+            <option value="makkah">Makkah</option>
+            <option value="dubai">Dubai</option>
+        </select>
+        <div class="card animate-on-scroll">
+            <h3>Next Prayer Countdown</h3>
+            <p id="prayer-countdown">Loading countdown...</p>
+        </div>
+        <div class="card animate-on-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Prayer (الصلاة)</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="prayer-table">
+                    <!-- Fallback content -->
+                    <tr><td>Fajr (فجر)</td><td>05:00</td></tr>
+                    <tr><td>Dhuhr (ظهر)</td><td>12:30</td></tr>
+                    <tr><td>Asr (عصر)</td><td>15:45</td></tr>
+                    <tr><td>Maghrib (مغرب)</td><td>18:30</td></tr>
+                    <tr><td>Isha (عشاء)</td><td>20:00</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>© 2025 DeenStream. All Rights Reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

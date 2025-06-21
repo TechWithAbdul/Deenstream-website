@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeenStream - Hadith (الحديث)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>DeenStream - Hadith (الحديث)</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quran.html">Qur’an (القرآن)</a></li>
+                <li><a href="hadith.html">Hadith (الحديث)</a></li>
+                <li><a href="prayer.html">Prayer Times (الصلاة)</a></li>
+                <li><a href="calendar.html">Calendar (التقويم)</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Hadith Collections (الحديث)</h2>
+        <div class="card-container" id="hadith-list">
+            <!-- Fallback content -->
+            <div class="card animate-on-scroll">
+                <h3>Sahih Bukhari (صحيح البخاري)</h3>
+                <div>
+                    <p class="english">Actions are judged by intentions...</p>
+                    <p class="arabic hidden">إنما الأعمال بالنيات...</p>
+                    <button class="toggle-btn" onclick="toggleText(this)">Show Arabic</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>© 2025 DeenStream. All Rights Reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
