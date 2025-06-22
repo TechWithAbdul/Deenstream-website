@@ -1,60 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeenStream - Islamic Resources</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeenStream - Your Islamic Companion</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" type="image/png" href="moon-icon.png"/>
 </head>
 <body>
-    <header>
-        <h1>DeenStream</h1>
-        <nav class="navbar">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="quran.html">Qur’an (القرآن)</a></li>
-                <li><a href="hadith.html">Hadith (الحديث)</a></li>
-                <li><a href="prayer.html">Prayer Times (الصلاة)</a></li>
-                <li><a href="calendar.html">Calendar (التقويم)</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="hero animate-on-scroll">
-            <h2>Welcome to DeenStream</h2>
-            <p>Your gateway to the Qur’an (القرآن), Hadith (الحديث), Prayer Times (الصلاة), and Islamic Calendar (التقويم).</p>
-            <a href="quran.html" class="btn">Explore Now</a>
-        </section>
-        <section class="prayer-widget animate-on-scroll">
-            <h3>Today’s Prayer Times (الصلاة)</h3>
-            <p id="prayer-widget-time">Loading prayer times...</p>
-        </section>
-        <div class="card-container">
-            <div class="card animate-on-scroll">
-                <h3>Qur’an (القرآن)</h3>
-                <p>Read and listen to the holy Qur’an with Arabic text.</p>
-                <a href="quran.html" class="btn">Explore Qur’an</a>
-            </div>
-            <div class="card animate-on-scroll">
-                <h3>Hadith (الحديث)</h3>
-                <p>Browse authentic Hadith collections.</p>
-                <a href="hadith.html" class="btn">View Hadith</a>
-            </div>
-            <div class="card animate-on-scroll">
-                <h3>Prayer Times (الصلاة)</h3>
-                <p>Check daily prayer schedules.</p>
-                <a href="prayer.html" class="btn">See Times</a>
-            </div>
-            <div class="card animate-on-scroll">
-                <h3>Calendar (التقويم)</h3>
-                <p>Stay updated with Islamic events.</p>
-                <a href="calendar.html" class="btn">View Calendar</a>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <p>© 2025 DeenStream. All Rights Reserved.</p>
-    </footer>
-    <script src="script.js"></script>
+  <header>
+    <h1>DeenStream</h1>
+    <nav class="navbar">
+      <ul>
+        <li><a href="#welcome">Home</a></li>
+        <li><a href="#prayer">Prayer Times</a></li>
+        <li><a href="#quran">Qur’an</a></li>
+        <li><a href="#hadith">Hadith</a></li>
+        <li><a href="#calendar">Calendar</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero / Welcome Section -->
+  <section id="welcome" class="hero">
+    <h2>Welcome to DeenStream</h2>
+    <p>Your digital companion for Islamic knowledge, prayers, and daily guidance.</p>
+    <a href="#quran" class="btn">Explore the Qur’an</a>
+  </section>
+
+  <!-- Prayer Times Section -->
+ <section id="prayer" class="section animate-on-scroll">
+  <h2>Prayer Times</h2>
+  <label for="city-select">Select City:</label>
+  <select id="city-select" class="styled-select">
+    <option value="karachi">Karachi</option>
+    <option value="makkah">Makkah</option>
+    <option value="dubai">Dubai</option>
+  </select>
+
+  <div id="prayer-cards" class="prayer-cards-container"></div>
+
+  <p id="prayer-countdown" class="prayer-countdown"></p>
+</section>
+
+
+  <!-- Qur’an Section -->
+  <section id="quran" class="section">
+    <h2>Qur’an Explorer (القرآن)</h2>
+    <div class="filters">
+      <label for="mode">Search By:</label>
+      <select id="mode">
+        <option value="surah">Surah</option>
+        <option value="parah">Parah</option>
+      </select>
+      <select id="dropdown"></select>
+    </div>
+    <div id="quran-content" class="card-container animate-on-scroll"></div>
+  </section>
+
+  <!-- Hadith Section -->
+  <section id="hadith" class="section">
+    <h2>Hadith Collection (الحديث)</h2>
+    <div id="hadith-list" class="card-container animate-on-scroll"></div>
+  </section>
+
+  <!-- Calendar Section -->
+  <section id="calendar" class="section">
+    <h2>Islamic Calendar & Events (التقويم)</h2>
+    <div class="card animate-on-scroll">
+      <p><strong>Today’s Islamic Date:</strong> <span id="islamic-date">Loading...</span></p>
+      <p><strong>Important Event:</strong> <span id="today-event">Fetching...</span></p>
+    </div>
+    <div class="card animate-on-scroll">
+      <h3>Upcoming Events</h3>
+      <ul id="upcoming-events-list">
+        <li>Loading events...</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 DeenStream. All Rights Reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>

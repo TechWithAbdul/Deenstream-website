@@ -1,186 +1,248 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Scroll Animations
-    const animateElements = document.querySelectorAll('.animate-on-scroll');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.1 });
-    animateElements.forEach(el => observer.observe(el));
+  // Smooth scroll navigation
+  document.querySelectorAll('.navbar a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const id = a.getAttribute('href').slice(1);
+      const section = document.getElementById(id);
+      section?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 
-    // Qur’an Page
-    if (document.getElementById('quran-list')) {
-        fetch('data/surahs.json')
-            .then(response => response.json())
-            .then(data => {
-                const quranList = document.getElementById('quran-list');
-                data.forEach(surah => {
-                    const card = document.createElement('div');
-                    card.className = 'card animate-on-scroll';
-                    card.innerHTML = `
-                        <h3>${surah.name}</h3>
-                        <p>${surah.englishName} - ${surah.verses} Verses</p>
-                        <p class="arabic verse" data-verse="${surah.number}">${surah.arabicText}</p>
-                        <audio controls src="${surah.audioUrl}" onplay="highlightVerse(${surah.number})"></audio>
-                    `;
-                    quranList.appendChild(card);
-                });
-            })
-            .catch(error => console.error('Error loading Surahs:', error));
-    }
+  // Scroll-in animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+  });
 
-    // Highlight Verse
-    window.highlightVerse = (verseNumber) => {
-        document.querySelectorAll('.verse').forEach(verse => {
-            verse.classList.remove('verse-highlight');
-        });
-        document.querySelector(`.verse[data-verse="${verseNumber}"]`).classList.add('verse-highlight');
-    };
+  /* Prayer Times */
+  const prayerCities = {
+    karachi: [
+      { name: 'Fajr', time: '05:00' },
+      { name: 'Ishraaq', time: '06:15' },
+      { name: 'Duha', time: '08:00' },
+      { name: 'Dhuhr', time: '12:30' },
+      { name: 'Asr', time: '15:45' },
+      { name: 'Maghrib', time: '18:30' },
+      { name: 'Isha', time: '20:00' },
+      { name: 'Tahajjud', time: '03:30' }
+    ],
+    makkah: [
+      { name: 'Fajr', time: '04:45' },
+      { name: 'Ishraaq', time: '05:50' },
+      { name: 'Duha', time: '07:30' },
+      { name: 'Dhuhr', time: '12:15' },
+      { name: 'Asr', time: '15:30' },
+      { name: 'Maghrib', time: '18:15' },
+      { name: 'Isha', time: '19:45' },
+      { name: 'Tahajjud', time: '03:00' }
+    ],
+    dubai: [
+      { name: 'Fajr', time: '04:30' },
+      { name: 'Ishraaq', time: '05:35' },
+      { name: 'Duha', time: '07:10' },
+      { name: 'Dhuhr', time: '12:00' },
+      { name: 'Asr', time: '15:15' },
+      { name: 'Maghrib', time: '18:00' },
+      { name: 'Isha', time: '19:30' },
+      { name: 'Tahajjud', time: '02:45' }
+    ]
+  };
+  const citySelect = document.getElementById('city-select');
+  const cardsContainer = document.getElementById('prayer-cards');
+  const countdownEl = document.getElementById('prayer-countdown');
 
-    // Hadith Page
-    if (document.getElementById('hadith-list')) {
-        fetch('data/hadiths.json')
-            .then(response => response.json())
-            .then(data => {
-                const hadithList = document.getElementById('hadith-list');
-                const collections = [...new Set(data.map(h => h.englishCollection))];
-                collections.forEach(collection => {
-                    const card = document.createElement('div');
-                    card.className = 'card animate-on-scroll';
-                    card.innerHTML = `<h3>${collection}</h3>`;
-                    const collectionHadiths = data.filter(h => h.englishCollection === collection);
-                    collectionHadiths.forEach(hadith => {
-                        const div = document.createElement('div');
-                        div.innerHTML = `
-                            <p class="english">${hadith.englishText}</p>
-                            <p class="arabic hidden">${hadith.arabicText}</p>
-                            <button class="toggle-btn" onclick="toggleText(this)">Show Arabic</button>
-                        `;
-                        card.appendChild(div);
-                    });
-                    hadithList.appendChild(card);
-                });
-            })
-            .catch(error => console.error('Error loading Hadiths:', error));
-    }
+  function showPrayers(city) {
+    cardsContainer.innerHTML = '';
+    prayerCities[city]?.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'prayer-card animate-on-scroll';
+      card.innerHTML = `<div class="prayer-name">${p.name}</div><div class="prayer-time">${p.time}</div>`;
+      cardsContainer.appendChild(card); 
+      observer.observe(card);
+    });
+  }
 
-    // Toggle Arabic/English
-    window.toggleText = (btn) => {
-        const parent = btn.parentElement;
-        const english = parent.querySelector('.english');
-        const arabic = parent.querySelector('.arabic');
-        if (arabic.classList.contains('hidden')) {
-            english.classList.add('hidden');
-            arabic.classList.remove('hidden');
-            btn.textContent = 'Show English';
+  function updateCountdown() {
+    const city = citySelect.value;
+    const now = new Date();
+    const upcoming = prayerCities[city].find(p => {
+      const [h,m] = p.time.split(':').map(Number);
+      const dt = new Date(now); dt.setHours(h,m,0,0);
+      return dt > now;
+    }) || prayerCities[city][0];
+    const [h,m] = upcoming.time.split(':').map(Number);
+    const prayerTime = new Date(now); prayerTime.setHours(h,m,0,0);
+    if (prayerTime < now) prayerTime.setDate(prayerTime.getDate()+1);
+    const diff = prayerTime - now;
+    const hrs = Math.floor(diff/3600000), mins = Math.floor(diff%3600000/60000), secs = Math.floor(diff%60000/1000);
+    countdownEl.textContent = `Next: ${upcoming.name} in ${hrs}h ${mins}m ${secs}s`;
+  }
+
+  citySelect.addEventListener('change', () => {
+    showPrayers(citySelect.value);
+    updateCountdown();
+  });
+  showPrayers(citySelect.value);
+  setInterval(updateCountdown, 1000);
+
+
+  /* Quran Section */
+  const modeSelect = document.getElementById('mode');
+  const dropdown = document.getElementById('dropdown');
+  const quranContainer = document.getElementById('quran-content');
+
+  fetch('data/surahs.json')
+    .then(res => res.json())
+    .then(surahArr => {
+      modeSelect.addEventListener('change', () => {
+        quranContainer.innerHTML = '';
+        populateOptions(modeSelect.value, surahArr);
+      });
+
+      dropdown.addEventListener('change', () => {
+        quranContainer.innerHTML = '';
+        const val = dropdown.value;
+        if (modeSelect.value === 'surah') {
+          const surah = surahArr.find(s => s.index === val);
+          displaySurah(surah);
         } else {
-            arabic.classList.add('hidden');
-            english.classList.remove('hidden');
-            btn.textContent = 'Show Arabic';
-        }
-    };
-
-    // Prayer Times Data
-    const prayerTimes = {
-        karachi: [
-            { name: 'Fajr (فجر)', time: '05:00' },
-            { name: 'Dhuhr (ظهر)', time: '12:30' },
-            { name: 'Asr (عصر)', time: '15:45' },
-            { name: 'Maghrib (مغرب)', time: '18:30' },
-            { name: 'Isha (عشاء)', time: '20:00' }
-        ],
-        makkah: [
-            { name: 'Fajr (فجر)', time: '04:45' },
-            { name: 'Dhuhr (ظهر)', time: '12:15' },
-            { name: 'Asr (عصر)', time: '15:30' },
-            { name: 'Maghrib (مغرب)', time: '18:15' },
-            { name: 'Isha (عشاء)', time: '19:45' }
-        ],
-        dubai: [
-            { name: 'Fajr (فجر)', time: '04:30' },
-            { name: 'Dhuhr (ظهر)', time: '12:00' },
-            { name: 'Asr (عصر)', time: '15:15' },
-            { name: 'Maghrib (مغرب)', time: '18:00' },
-            { name: 'Isha (عشاء)', time: '19:30' }
-        ]
-    };
-
-    // Update Prayer Times
-    window.updatePrayerTimes = () => {
-        const city = document.getElementById('city-select')?.value || 'karachi';
-        const prayerTable = document.getElementById('prayer-table');
-        if (prayerTable) {
-            prayerTable.innerHTML = '';
-            prayerTimes[city].forEach(prayer => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${prayer.name}</td><td>${prayer.time}</td>`;
-                prayerTable.appendChild(row);
+          const verses = [];
+          surahArr.forEach(s => {
+            s.juz.forEach(j => {
+              if (j.index === val) {
+                const start = +j.verse.start.split('_')[1];
+                const end = +j.verse.end.split('_')[1];
+                for (let i=start; i<=end; i++) {
+                  verses.push({ sIndex: s.index, vNum: i, text: s.verse[`verse_${i}`] });
+                }
+              }
             });
-            updateCountdown(city);
+          });
+          displayParah(val, verses);
         }
-    };
+      });
 
-    // Prayer Widget and Countdown
-    const updatePrayerWidget = () => {
-        const now = new Date();
-        const times = prayerTimes.karachi; // Default city
-        let nextPrayer = null;
-        for (let prayer of times) {
-            const [hours, minutes] = prayer.time.split(':').map(Number);
-            const prayerTime = new Date(now);
-            prayerTime.setHours(hours, minutes, 0, 0);
-            if (prayerTime > now) {
-                nextPrayer = prayer;
-                break;
-            }
-        }
-        if (!nextPrayer) nextPrayer = times[0]; // Next day's Fajr
-        const widget = document.getElementById('prayer-widget-time');
-        if (widget) {
-            widget.textContent = `Next: ${nextPrayer.name} at ${nextPrayer.time}`;
-        }
-    };
+      populateOptions(modeSelect.value, surahArr);
+    })
+    .catch(err => console.error(err));
 
-    const updateCountdown = (city) => {
-        const now = new Date();
-        const times = prayerTimes[city];
-        let nextPrayer = null;
-        let nextTime = null;
-        for (let prayer of times) {
-            const [hours, minutes] = prayer.time.split(':').map(Number);
-            const prayerTime = new Date(now);
-            prayerTime.setHours(hours, minutes, 0, 0);
-            if (prayerTime > now) {
-                nextPrayer = prayer.name;
-                nextTime = prayerTime;
-                break;
-            }
-        }
-        if (!nextPrayer) {
-            nextPrayer = times[0].name;
-            nextTime = new Date(now);
-            nextTime.setDate(now.getDate() + 1);
-            nextTime.setHours(times[0].time.split(':')[0], times[0].time.split(':')[1], 0, 0);
-        }
-        const countdown = document.getElementById('prayer-countdown');
-        if (countdown) {
-            const diff = nextTime - now;
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            countdown.textContent = `Next: ${nextPrayer} in ${hours}h ${minutes}m ${seconds}s`;
-        }
-    };
-
-    if (document.getElementById('prayer-table')) {
-        updatePrayerTimes();
-        setInterval(updateCountdown, 1000, document.getElementById('city-select')?.value || 'karachi');
+  function populateOptions(type, arr) {
+    dropdown.innerHTML = '';
+    if (type === 'surah') {
+      arr.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.index;
+        o.textContent = `${s.index}. ${s.title}`;
+        dropdown.appendChild(o);
+      });
+    } else {
+      const set = new Set();
+      arr.forEach(s => s.juz.forEach(j => set.add(j.index)));
+      Array.from(set).sort((a,b)=>a-b).forEach(jIdx => {
+        const o = document.createElement('option');
+        o.value = jIdx;
+        o.textContent = `Parah ${jIdx}`;
+        dropdown.appendChild(o);
+      });
     }
+  }
 
-    if (document.getElementById('prayer-widget-time')) {
-        updatePrayerWidget();
-        setInterval(updatePrayerWidget, 60000);
+  function displaySurah(s) {
+    if (!s) return;
+    const h = document.createElement('h3');
+    h.textContent = `${s.index}. ${s.title}`;
+    quranContainer.appendChild(h);
+    for (let i=1; i<=s.count; i++) {
+      const p = document.createElement('p');
+      p.className = 'arabic animate-on-scroll';
+      p.textContent = `${i}. ${s.verse[`verse_${i}`]}`;
+      quranContainer.appendChild(p);
+      observer.observe(p);
     }
+  }
+
+  function displayParah(idx, arr) {
+    const h = document.createElement('h3');
+    h.textContent = `Parah ${idx}`;
+    quranContainer.appendChild(h);
+    arr.forEach(v => {
+      const p = document.createElement('p');
+      p.className = 'arabic animate-on-scroll';
+      p.textContent = `${v.sIndex}.${v.vNum} ${v.text}`;
+      quranContainer.appendChild(p);
+      observer.observe(p);
+    });
+  }
+
+
+  /* Hadith Section */
+  const hadithContainer = document.getElementById('hadith-list');
+  fetch('data/hadiths.json')
+    .then(res => res.json())
+    .then(data => {
+      const colSet = new Set(data.map(h=>h.englishCollection));
+      const colArr = Array.from(colSet);
+      const hadithFilter = document.createElement('select');
+      hadithFilter.className = 'styled-select animate-on-scroll';
+      const allOpt = document.createElement('option'); allOpt.value='all'; allOpt.text='All Collections';
+      hadithFilter.append(allOpt);
+      colArr.forEach(col => {
+        const o = document.createElement('option'); o.value=col; o.text=col;
+        hadithFilter.append(o);
+      });
+      hadithContainer.parentElement.prepend(hadithFilter);
+      observer.observe(hadithFilter);
+      function displayHadith(filter) {
+        hadithContainer.innerHTML = '';
+        data.filter(h => filter==='all' || h.englishCollection===filter)
+          .forEach(h => {
+            const card = document.createElement('div');
+            card.className = 'card animate-on-scroll';
+            card.innerHTML = `
+              <p class="english">${h.englishText}</p>
+              <p class="arabic hidden">${h.arabicText}</p>
+              <button class="toggle-btn">Show Arabic</button>`;
+            hadithContainer.append(card);
+            const btn = card.querySelector('.toggle-btn');
+            btn.addEventListener('click', () => {
+              const eLang = card.querySelector('.english');
+              const aLang = card.querySelector('.arabic');
+              if (aLang.classList.contains('hidden')) {
+                aLang.classList.remove('hidden');
+                eLang.classList.add('hidden');
+                btn.textContent = 'Show English';
+              } else {
+                aLang.classList.add('hidden');
+                eLang.classList.remove('hidden');
+                btn.textContent = 'Show Arabic';
+              }
+            });
+          });
+      }
+      displayHadith('all');
+      hadithFilter.addEventListener('change', () => displayHadith(hadithFilter.value));
+    })
+    .catch(err => console.error(err));
+
+
+  /* Islamic Calendar Section */
+  const islamicDateElem = document.getElementById('islamic-date');
+  const todayEventElem = document.getElementById('today-event');
+
+  function getIslamicDate() {
+    // For now: static example
+    const dt = new Date();
+    const hijri = dt.toLocaleDateString('en-u-ca-islamic', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    islamicDateElem.textContent = hijri;
+    todayEventElem.textContent = "No special events today.";
+  }
+  getIslamicDate();
+
 });
