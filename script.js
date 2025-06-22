@@ -1,13 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Smooth scroll navigation
-  document.querySelectorAll('.navbar a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const id = a.getAttribute('href').slice(1);
-      const section = document.getElementById(id);
-      section?.scrollIntoView({ behavior: 'smooth' });
-    });
+  // Navbar scroll animation
+  const navbar = document.querySelector('.navbar');
+  let lastScrollY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+    lastScrollY = window.scrollY;
   });
+
 
   // Scroll-in animations
   const observer = new IntersectionObserver(entries => {
@@ -92,121 +95,132 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* Quran Section */
-  const modeSelect = document.getElementById('mode');
-  const dropdown = document.getElementById('dropdown');
+  const modeSelect = document.getElementById('quran-mode');
+  const dropdown = document.getElementById('quran-selector');
   const quranContainer = document.getElementById('quran-content');
+  const quranPlaceholder = document.getElementById('quran-placeholder');
 
   fetch('data/surahs.json')
     .then(res => res.json())
     .then(surahArr => {
-      modeSelect.addEventListener('change', () => {
+      function populateOptions(type) {
+        dropdown.innerHTML = '';
+        if (type === 'surah') {
+          surahArr.forEach(s => {
+            const o = document.createElement('option');
+            o.value = s.index;
+            o.textContent = `${s.index}. ${s.name}`;
+            dropdown.appendChild(o);
+          });
+        } else {
+          // Collect unique Parah indices
+          const parahSet = new Set();
+          surahArr.forEach(s => s.juz.forEach(j => parahSet.add(j.index)));
+          Array.from(parahSet).sort().forEach(jIdx => {
+            const o = document.createElement('option');
+            o.value = jIdx;
+            o.textContent = `Parah ${jIdx}`;
+            dropdown.appendChild(o);
+          });
+        }
+        // Reset container and placeholder on filter change
         quranContainer.innerHTML = '';
-        populateOptions(modeSelect.value, surahArr);
+        quranPlaceholder.style.display = 'block';
+      }
+
+      modeSelect.addEventListener('change', () => {
+        populateOptions(modeSelect.value);
       });
 
       dropdown.addEventListener('change', () => {
         quranContainer.innerHTML = '';
-        const val = dropdown.value;
+        quranPlaceholder.style.display = 'none';
+
         if (modeSelect.value === 'surah') {
-          const surah = surahArr.find(s => s.index === val);
+          const surah = surahArr.find(s => s.index === dropdown.value);
           displaySurah(surah);
+          scrollToSection(quranContainer);
         } else {
+          // Parah mode
           const verses = [];
           surahArr.forEach(s => {
             s.juz.forEach(j => {
-              if (j.index === val) {
+              if (j.index === dropdown.value) {
                 const start = +j.verse.start.split('_')[1];
                 const end = +j.verse.end.split('_')[1];
-                for (let i=start; i<=end; i++) {
+                for (let i = start; i <= end; i++) {
                   verses.push({ sIndex: s.index, vNum: i, text: s.verse[`verse_${i}`] });
                 }
               }
             });
           });
-          displayParah(val, verses);
+          displayParah(dropdown.value, verses);
+          scrollToSection(quranContainer);
         }
       });
 
-      populateOptions(modeSelect.value, surahArr);
+      populateOptions(modeSelect.value);
+
+      function displaySurah(s) {
+        if (!s) return;
+        const h = document.createElement('h3');
+        h.textContent = `${s.index}. ${s.name}`;
+        quranContainer.appendChild(h);
+        for (let i = 1; i <= s.count; i++) {
+          const p = document.createElement('p');
+          p.className = 'arabic animate-on-scroll';
+          p.textContent = `${i}. ${s.verse[`verse_${i}`]}`;
+          quranContainer.appendChild(p);
+        }
+      }
+
+      function displayParah(idx, arr) {
+        const h = document.createElement('h3');
+        h.textContent = `Parah ${idx}`;
+        quranContainer.appendChild(h);
+        arr.forEach(v => {
+          const p = document.createElement('p');
+          p.className = 'arabic animate-on-scroll';
+          p.textContent = `${v.sIndex}.${v.vNum} ${v.text}`;
+          quranContainer.appendChild(p);
+        });
+      }
+
+      function scrollToSection(element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     })
     .catch(err => console.error(err));
 
-  function populateOptions(type, arr) {
-    dropdown.innerHTML = '';
-    if (type === 'surah') {
-      arr.forEach(s => {
-        const o = document.createElement('option');
-        o.value = s.index;
-        o.textContent = `${s.index}. ${s.title}`;
-        dropdown.appendChild(o);
-      });
-    } else {
-      const set = new Set();
-      arr.forEach(s => s.juz.forEach(j => set.add(j.index)));
-      Array.from(set).sort((a,b)=>a-b).forEach(jIdx => {
-        const o = document.createElement('option');
-        o.value = jIdx;
-        o.textContent = `Parah ${jIdx}`;
-        dropdown.appendChild(o);
-      });
-    }
-  }
-
-  function displaySurah(s) {
-    if (!s) return;
-    const h = document.createElement('h3');
-    h.textContent = `${s.index}. ${s.title}`;
-    quranContainer.appendChild(h);
-    for (let i=1; i<=s.count; i++) {
-      const p = document.createElement('p');
-      p.className = 'arabic animate-on-scroll';
-      p.textContent = `${i}. ${s.verse[`verse_${i}`]}`;
-      quranContainer.appendChild(p);
-      observer.observe(p);
-    }
-  }
-
-  function displayParah(idx, arr) {
-    const h = document.createElement('h3');
-    h.textContent = `Parah ${idx}`;
-    quranContainer.appendChild(h);
-    arr.forEach(v => {
-      const p = document.createElement('p');
-      p.className = 'arabic animate-on-scroll';
-      p.textContent = `${v.sIndex}.${v.vNum} ${v.text}`;
-      quranContainer.appendChild(p);
-      observer.observe(p);
-    });
-  }
-
-
   /* Hadith Section */
-  const hadithContainer = document.getElementById('hadith-list');
+   const hadithContainer = document.getElementById('hadith-list');
   fetch('data/hadiths.json')
     .then(res => res.json())
     .then(data => {
-      const colSet = new Set(data.map(h=>h.englishCollection));
+      const colSet = new Set(data.map(h => h.englishCollection));
       const colArr = Array.from(colSet);
       const hadithFilter = document.createElement('select');
       hadithFilter.className = 'styled-select animate-on-scroll';
-      const allOpt = document.createElement('option'); allOpt.value='all'; allOpt.text='All Collections';
+      hadithFilter.setAttribute('aria-label', 'Filter Hadith by Collection');
+      const allOpt = document.createElement('option'); allOpt.value = 'all'; allOpt.text = 'All Collections';
       hadithFilter.append(allOpt);
       colArr.forEach(col => {
-        const o = document.createElement('option'); o.value=col; o.text=col;
+        const o = document.createElement('option'); o.value = col; o.text = col;
         hadithFilter.append(o);
       });
       hadithContainer.parentElement.prepend(hadithFilter);
-      observer.observe(hadithFilter);
+
       function displayHadith(filter) {
         hadithContainer.innerHTML = '';
-        data.filter(h => filter==='all' || h.englishCollection===filter)
+        data.filter(h => filter === 'all' || h.englishCollection === filter)
           .forEach(h => {
             const card = document.createElement('div');
             card.className = 'card animate-on-scroll';
             card.innerHTML = `
               <p class="english">${h.englishText}</p>
               <p class="arabic hidden">${h.arabicText}</p>
-              <button class="toggle-btn">Show Arabic</button>`;
+              <button class="toggle-btn">Show Arabic</button>
+            `;
             hadithContainer.append(card);
             const btn = card.querySelector('.toggle-btn');
             btn.addEventListener('click', () => {
@@ -228,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hadithFilter.addEventListener('change', () => displayHadith(hadithFilter.value));
     })
     .catch(err => console.error(err));
+
 
 
   /* Islamic Calendar Section */

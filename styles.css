@@ -89,7 +89,7 @@ header h1 {
 
 /* Hero section */
 .hero {
-  background: url('assets/islam1.jpg') no-repeat;
+  background: url('assets/islam7.jpg') center no-repeat ;
 background-size: cover;
   padding: 5em 1.5em;
   color: white;
@@ -372,4 +372,60 @@ td {
   font-size: 1.2rem;
   color: #1e40af;
   text-align: center;
+}
+
+/* Navbar logo container */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2em;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Navbar scroll animation */
+.navbar.scrolled {
+  background: #184336cc; /* semi-transparent dark green */
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Quran placeholder styling */
+.quran-placeholder {
+  max-width: 600px;
+  margin: 2em auto;
+  padding: 2em;
+  background: var(--light-bg);
+  border-radius: 12px;
+  text-align: center;
+  font-style: italic;
+  color: var(--primary-color);
+  font-family: 'Amiri', serif;
+}
+
+/* Hadith flexbox container */
+#hadith-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em;
+  justify-content: center;
+}
+
+/* Hadith card fixed width for uniform layout */
+#hadith-list .card {
+  flex: 1 1 280px;
+  max-width: 320px;
+  cursor: default;
+  user-select: none;
 }

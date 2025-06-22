@@ -9,17 +9,20 @@
 </head>
 <body>
   <header>
-    <h1>DeenStream</h1>
-    <nav class="navbar">
-      <ul>
-        <li><a href="#welcome">Home</a></li>
-        <li><a href="#prayer">Prayer Times</a></li>
-        <li><a href="#quran">Qur’an</a></li>
-        <li><a href="#hadith">Hadith</a></li>
-        <li><a href="#calendar">Calendar</a></li>
-      </ul>
-    </nav>
-  </header>
+  <nav class="navbar">
+    <div class="logo-container">
+      <img src="moon-icon.png" alt="DeenStream Logo" class="logo" />
+      <h1>DeenStream</h1>
+    </div>
+    <ul>
+      <li><a href="#welcome">Home</a></li>
+      <li><a href="#prayer">Prayer Times</a></li>
+      <li><a href="#quran">Qur’an</a></li>
+      <li><a href="#hadith">Hadith</a></li>
+      <li><a href="#calendar">Calendar</a></li>
+    </ul>
+  </nav>
+</header>
 
   <!-- Hero / Welcome Section -->
   <section id="welcome" class="hero">
@@ -46,17 +49,24 @@
 
   <!-- Qur’an Section -->
   <section id="quran" class="section">
-    <h2>Qur’an Explorer (القرآن)</h2>
-    <div class="filters">
-      <label for="mode">Search By:</label>
-      <select id="mode">
-        <option value="surah">Surah</option>
-        <option value="parah">Parah</option>
-      </select>
-      <select id="dropdown"></select>
-    </div>
-    <div id="quran-content" class="card-container animate-on-scroll"></div>
-  </section>
+  <h2>Qur’an Explorer (القرآن)</h2>
+  <div class="quran-filter">
+    <select id="quran-mode" class="styled-select">
+      <option value="surah">Browse by Surah</option>
+      <option value="parah">Browse by Parah</option>
+    </select>
+
+    <select id="quran-selector" class="styled-select">
+      <option disabled selected>Select an option</option>
+    </select>
+  </div>
+  
+  <div id="quran-placeholder" class="quran-placeholder">
+    <p>Please select a Surah or Parah from the filters above to begin reading.</p>
+  </div>
+
+  <div id="quran-content" class="quran-content"></div>
+</section>
 
   <!-- Hadith Section -->
   <section id="hadith" class="section">
