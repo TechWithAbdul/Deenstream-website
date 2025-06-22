@@ -197,30 +197,28 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch('data/hadiths.json')
     .then(res => res.json())
     .then(data => {
-      const colSet = new Set(data.map(h => h.englishCollection));
+      const colSet = new Set(data.map(h=>h.englishCollection));
       const colArr = Array.from(colSet);
       const hadithFilter = document.createElement('select');
       hadithFilter.className = 'styled-select animate-on-scroll';
-      hadithFilter.setAttribute('aria-label', 'Filter Hadith by Collection');
-      const allOpt = document.createElement('option'); allOpt.value = 'all'; allOpt.text = 'All Collections';
+      const allOpt = document.createElement('option'); allOpt.value='all'; allOpt.text='All Collections';
       hadithFilter.append(allOpt);
       colArr.forEach(col => {
-        const o = document.createElement('option'); o.value = col; o.text = col;
+        const o = document.createElement('option'); o.value=col; o.text=col;
         hadithFilter.append(o);
       });
       hadithContainer.parentElement.prepend(hadithFilter);
-
+      observer.observe(hadithFilter);
       function displayHadith(filter) {
         hadithContainer.innerHTML = '';
-        data.filter(h => filter === 'all' || h.englishCollection === filter)
+        data.filter(h => filter==='all' || h.englishCollection===filter)
           .forEach(h => {
             const card = document.createElement('div');
             card.className = 'card animate-on-scroll';
             card.innerHTML = `
               <p class="english">${h.englishText}</p>
               <p class="arabic hidden">${h.arabicText}</p>
-              <button class="toggle-btn">Show Arabic</button>
-            `;
+              <button class="toggle-btn">Show Arabic</button>`;
             hadithContainer.append(card);
             const btn = card.querySelector('.toggle-btn');
             btn.addEventListener('click', () => {
@@ -242,9 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
       hadithFilter.addEventListener('change', () => displayHadith(hadithFilter.value));
     })
     .catch(err => console.error(err));
-
-
-
   /* Islamic Calendar Section */
   const islamicDateElem = document.getElementById('islamic-date');
   const todayEventElem = document.getElementById('today-event');
