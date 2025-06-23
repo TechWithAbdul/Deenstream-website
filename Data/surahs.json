@@ -1,6 +1,6 @@
 [
     {
-        "index": "001",
+        "index": 1,
         "name": "Al-Fatiha",
         "verse": {
             "verse_1": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
@@ -14,7 +14,7 @@
         "count": 7,
         "juz": [
             {
-                "index": "01",
+                "index": 1,
                 "verse": {
                     "start": "verse_1",
                     "end": "verse_7"
@@ -23,7 +23,7 @@
         ]
     },
     {
-        "index": "100",
+        "index": 100,
         "name": "Al-‘Adiyat",
         "verse": {
             "verse_1": "وَٱلْعَٰدِيَٰتِ ضَبْحًۭا",
@@ -41,7 +41,7 @@
         "count": 11,
         "juz": [
             {
-                "index": "30",
+                "index": 30,
                 "verse": {
                     "start": "verse_1",
                     "end": "verse_11"
