@@ -1,6 +1,4 @@
 [
-    {"id": 1, "collection": "Sahih Bukhari (صحيح البخاري)", "englishCollection": "Sahih Bukhari", "book": 1, "number": 1, "arabicText": "إنما الأعمال بالنيات...", "englishText": "Actions are judged by intentions..."},
-    {"id": 2, "collection": "Sahih Muslim (صحيح مسلم)", "englishCollection": "Sahih Muslim", "book": 1, "number": 2, "arabicText": "بني الإسلام على خمس...", "englishText": "Islam is built upon five pillars..."},
-    {"id": 3, "collection": "Sahih Bukhari (صحيح البخاري)", "englishCollection": "Sahih Bukhari", "book": 2, "number": 3, "arabicText": "جزاء الأعمال يعتمد على النيات...", "englishText": "The reward of deeds depends upon intentions..."},
-    {"id": 4, "collection": "Sahih Muslim (صحيح مسلم)", "englishCollection": "Sahih Muslim", "book": 2, "number": 4, "arabicText": "من صام رمضان إيمانًا واحتسابًا...", "englishText": "Whoever fasts Ramadan with faith and seeking reward..."}
+  { "english": "Do good deeds properly...", "arabic": "اعملوا الأعمال الصالحة..." },
+  { "english": "The best among you...", "arabic": "خيركم..." }
 ]

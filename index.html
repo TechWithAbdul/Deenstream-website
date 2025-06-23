@@ -1,100 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DeenStream</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/png" href="assets/logo.png" />
-  <!-- Google Fonts for Arabic and English support -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <header>
     <nav class="navbar">
       <div class="logo-container">
-        <img src="assets/logo.png" alt="Logo" class="logo" />
+        <img src="Assets/logo.png" alt="Logo" class="logo">
         <h1>DeenStream</h1>
+        <button class="menu-toggle"><i class="fas fa-bars"></i></button>
       </div>
-      <div class="menu-toggle" id="menu-toggle">☰</div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="#welcome">Home</a></li>
-        <li><a href="#prayer">Prayer Times</a></li>
-        <li><a href="#quran">Qur’an</a></li>
-        <li><a href="#hadith">Hadith</a></li>
-        <li><a href="#calendar">Calendar</a></li>
+      <ul class="nav-links">
+        <li><a href="#quran">Quran - القرآن</a></li>
+        <li><a href="#hadith">Hadith - الحديث</a></li>
+        <li><a href="#prayer">Prayer - الصلاة</a></li>
+        <li><a href="#calendar">Calendar - التقويم</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Hero / Welcome Section -->
-  <section id="welcome" class="hero">
-    <h2>Welcome to DeenStream</h2>
-    <p>Your digital companion for Islamic knowledge, prayers, and daily guidance.</p>
-    <div id="daily-content" class="card animate-on-scroll"></div>
-    <a href="#quran" class="btn">Explore the Qur’an</a>
-  </section>
-
-  <!-- Prayer Times Section -->
-  <section id="prayer" class="section animate-on-scroll">
-    <h2>Prayer Times</h2>
-    <label for="city-select">Select City:</label>
-    <select id="city-select" class="styled-select">
-      <option value="karachi">Karachi</option>
-      <option value="makkah">Makkah</option>
-      <option value="dubai">Dubai</option>
-    </select>
-    <div id="prayer-cards" class="prayer-cards-container"></div>
-    <p id="prayer-countdown" class="prayer-countdown"></p>
-    <div id="prayer-alert" class="card animate-on-scroll"></div>
-  </section>
-
-  <!-- Qur’an Section -->
-  <section id="quran" class="section">
-    <h2>Qur’an Explorer (القرآن)</h2>
-    <div class="quran-filter">
-      <select id="quran-mode" class="styled-select">
-        <option value="surah">Browse by Surah</option>
-        <option value="parah">Browse by Parah</option>
-      </select>
-      <select id="quran-selector" class="styled-select">
-        <option disabled selected>Select an option</option>
-      </select>
+  <div id="welcome" class="hero section animate-on-scroll">
+    <div class="welcome-content">
+      <h2>Welcome to DeenStream - مرحبًا بكم في دين ستريم</h2>
+      <p>Embark on a spiritual journey with the Quran, Hadiths, and prayer times.</p>
+      <a href="#quran" class="btn">Begin Your Journey - ابدأ رحلتك</a>
     </div>
-    <div id="quran-placeholder" class="quran-placeholder">
-      <p>Please select a Surah or Parah from the filters above to begin reading.</p>
+    <div class="overlay"></div>
+    <div class="interactive-elements">
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
     </div>
+    <div id="daily-content"></div>
+  </div>
+
+  <div id="quran" class="section">
+    <h2>Quran Section - القرآن</h2>
+    <div class="dashboard" id="quran-dashboard"></div>
     <div id="quran-content" class="quran-content"></div>
-    <div id="reading-progress" class="card animate-on-scroll"></div>
-  </section>
+    <div id="quran-placeholder" class="quran-placeholder">Select an option to start reading... - اختر خيارًا لتبدأ القراءة</div>
+    <audio id="quran-audio" controls></audio>
+    <div id="quran-controls" class="quran-controls"></div>
+    <button id="return-quran" class="btn">Return to Main Quran Interface - العودة إلى واجهة القرآن الرئيسية</button>
+  </div>
 
-  <!-- Hadith Section -->
-  <section id="hadith" class="section">
-    <h2>Hadith Collection (الحديث)</h2>
-    <div id="hadith-list" class="card-container animate-on-scroll"></div>
-  </section>
+  <div id="hadith" class="section">
+    <h2>Hadith Section - الحديث</h2>
+    <div id="hadith-content" class="hadith-content"></div>
+  </div>
 
-  <!-- Calendar Section -->
-  <section id="calendar" class="section">
-    <h2>Islamic Calendar & Events (التقويم)</h2>
-    <div class="card animate-on-scroll">
-      <p><strong>Today’s Islamic Date:</strong> <span id="islamic-date">Loading...</span></p>
-      <p><strong>Important Event:</strong> <span id="today-event">Fetching...</span></p>
+  <div id="prayer" class="section">
+    <h2>Prayer Times - Karachi (02:58 PM, June 23, 2025) - أوقات الصلاة - كراتشي</h2>
+    <div class="prayer-times-container" id="prayer-times"></div>
+    <div id="prayer-countdown" class="prayer-countdown"></div>
+    <div id="prayer-alert"></div>
+    <button id="adhan-btn" class="btn">Play Adhan - تشغيل الأذان</button>
+    <audio id="adhan-audio" controls style="display:none;"></audio>
+  </div>
+
+  <div id="calendar" class="section">
+    <h2>Islamic Calendar - التقويم الإسلامي</h2>
+    <p id="islamic-date"></p>
+    <p id="today-event"></p>
+    <ul id="upcoming-events-list"></ul>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2025 DeenStream. All rights reserved. - © 2025 دين ستريم. جميع الحقوق محفوظة</p>
+      <div class="footer-links">
+        <a href="#">About Us - عنا</a> | <a href="#">Contact - تواصل</a> | <a href="#">Privacy Policy - سياسة الخصوصية</a>
+      </div>
     </div>
-    <div class="card animate-on-scroll">
-      <h3>Upcoming Events</h3>
-      <ul id="upcoming-events-list">
-        <li>Loading events...</li>
-      </ul>
+    <div class="footer-design">
+      <div class="pattern"></div>
     </div>
-  </section>
-
-  <footer>
-    <p>© 2025 DeenStream. All Rights Reserved.</p>
   </footer>
-
-  <!-- Audio Element for Quran Recitation -->
-  <audio id="quran-audio" src="" controls style="display: none;"></audio>
 
   <script src="script.js"></script>
 </body>
