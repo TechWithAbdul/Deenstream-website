@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import quran, ai, redirects
+from .routers import quran, ai, hadith, prayer, redirects
 
 app = FastAPI(title="DeenStream AI - API")
 
@@ -15,6 +15,8 @@ app.add_middleware(
 
 app.include_router(quran.router)
 app.include_router(ai.router)
+app.include_router(hadith.router)
+app.include_router(prayer.router)
 app.include_router(redirects.router)
 
 @app.get("/health")

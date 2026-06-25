@@ -1,12 +1,6 @@
-import axios from 'axios'
+import api from '../utils/api'
 
-const HADITH_API = 'https://www.hadithapi.com/api'
-
-export async function fetchCollection(name){
-  // placeholder - real hadithapi endpoints require key; return empty structure to avoid breaking UI
-  return { data: [] }
-}
-
-export async function searchHadith(q){
-  return { data: [] }
+export async function fetchHadiths(query = ''){
+  const res = await api.get('/hadith', { params: query ? { q: query } : {} })
+  return res.data
 }

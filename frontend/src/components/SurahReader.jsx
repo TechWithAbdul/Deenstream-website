@@ -34,7 +34,7 @@ export default function SurahReader({surah, highlightedAyah, highlightQuery}){
         <div className="space-y-3">
           {surah.ayahs.map(a=> (
             <div id={`ayah-${a.number}`} key={a.number} ref={el => refs.current[a.number] = el} className={localHighlight === a.number ? 'verse-highlight transition-shadow' : ''}>
-              <VerseCard ayah={a} highlightQuery={highlightQuery} />
+              <VerseCard ayah={a} highlightQuery={highlightQuery} surahNumber={surah.number} />
             </div>
           ))}
         </div>

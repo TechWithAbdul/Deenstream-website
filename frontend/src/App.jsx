@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 const Home = lazy(()=> import('./pages/Home'))
 const Quran = lazy(()=> import('./pages/Quran'))
 const Hadith = lazy(()=> import('./pages/Hadith'))
+const Prayer = lazy(()=> import('./pages/Prayer'))
 const Chat = lazy(()=> import('./pages/Chat'))
 
 export default function App(){
@@ -16,9 +17,9 @@ export default function App(){
         <Suspense fallback={<div className="p-6">Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home/>} />
-            {/* Deep-linking: accepts optional surah and ayah params */}
             <Route path="/quran/:surah?/:ayah?" element={<Quran/>} />
             <Route path="/hadith" element={<Hadith/>} />
+            <Route path="/prayer" element={<Prayer/>} />
             <Route path="/chat" element={<Chat/>} />
           </Routes>
         </Suspense>

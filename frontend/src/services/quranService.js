@@ -1,25 +1,18 @@
-import axios from 'axios'
-
-const QURAN_API = 'https://api.alquran.cloud/v1'
+import api from '../utils/api'
 
 export async function fetchSurahList(){
-  const res = await axios.get(`${QURAN_API}/surah`)
+  const res = await api.get('/quran/surah')
   return res.data
 }
 
 export async function fetchSurah(number){
-  // Request common edition - adapt to returned schema
-  const res = await axios.get(`${QURAN_API}/surah/${number}/editions/quran-uthmani,en.asad`)
-  // The alquran.cloud response nests data per edition; normalize to a single surah object with ayahs array
+  const res = await api.get(`/quran/surah/${number}`)
+  const payload = res.data
   try{
-    const payload = res.data
-    // If payload.data is array of editions
     if(Array.isArray(payload.data)){
-      // find arabic and english
       const arabic = payload.data.find(d=> d.edition && d.edition.language === 'ar')
       const eng = payload.data.find(d=> d.edition && d.edition.language === 'en')
       const surah = arabic || payload.data[0]
-      // Attach translations into ayah objects when available
       if(eng && eng.ayahs){
         surah.ayahs = surah.ayahs.map((a,i)=> ({...a, translation: eng.ayahs[i]?.text}))
       }
@@ -27,14 +20,13 @@ export async function fetchSurah(number){
     }
     return payload
   }catch(e){
-    return res.data
+    return payload
   }
 }
 
 export async function searchAyah(query){
-  // Use quran.com search as supplemental API (rate-limits apply)
   try{
-    const res = await axios.get(`https://api.quran.com/api/v4/search?q=${encodeURIComponent(query)}`)
+    const res = await api.get('/quran/search', { params: { q: query } })
     return res.data.results || []
   }catch(err){
     console.error('Search API failed', err)

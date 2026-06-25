@@ -1,1 +1,1 @@
-from . import quran, ai, redirects
+from . import quran, ai, hadith, prayer, redirects
