@@ -6,11 +6,13 @@ Structure:
 - src/services
 - src/hooks
 - src/utils
-- src/data
 - src/assets
 - public
 
 Run:
-- npm create vite@latest frontend --template react
 - cd frontend
 - npm install
+- npm run dev
+
+Build:
+- npm run build
