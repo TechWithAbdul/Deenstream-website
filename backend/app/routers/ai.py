@@ -12,4 +12,6 @@ async def chat(q: Query):
     resp = await ask_ai(q.question)
     if not resp:
         raise HTTPException(status_code=500, detail='AI service error')
+    if not resp.strip():
+        raise HTTPException(status_code=500, detail='AI service error')
     return {'answer': resp}
