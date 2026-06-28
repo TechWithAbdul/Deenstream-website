@@ -1,28 +1,20 @@
-const BASE_URL = 'http://127.0.0.1:8000/';
+import axios from 'axios';
 
-export const apiService = {
-  async getChapters() {
-    const res = await fetch(`${BASE_URL}/quran/chapters`);
-    return res.json();
+const api = axios.create({
+  baseURL: 'http://localhost:8000',
+  timeout: 15000,
+  headers: {
+    'Content-Type': 'application/json',
   },
-  async getSurah(id) {
-    const res = await fetch(`${BASE_URL}/quran/surah/${id}`);
-    return res.json();
-  },
-  async getPrayerTimes(lat, lng, tz, date) {
-    const res = await fetch(`${BASE_URL}/calculations/prayer-times?latitude=${lat}&longitude=${lng}&timezone=${tz}&date=${date}`);
-    return res.json();
-  },
-  async getQibla(lat, lng) {
-    const res = await fetch(`${BASE_URL}/calculations/qibla?latitude=${lat}&longitude=${lng}`);
-    return res.json();
-  },
-  async postAiChat(prompt, keyword = "") {
-    const res = await fetch(`${BASE_URL}/ai/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, context_keyword: keyword })
-    });
-    return res.json();
+});
+
+// Global interceptor to handle errors gracefully without crashing the UI
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error Interceptor:', error.response?.data || error.message);
+    return Promise.reject(error);
   }
-};
+);
+
+export default api;

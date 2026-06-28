@@ -1,232 +1,80 @@
-// src/pages/AIChat.jsx
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { MessageSquare, Send, RotateCcw, User, Bot, AlertCircle, Sparkles } from 'lucide-react'
-import { aiApi } from '../utils/api'
-
-const SUGGESTED_QUESTIONS = [
-  'What are the five pillars of Islam?',
-  'Explain the significance of Ramadan.',
-  'What does Islam say about seeking knowledge?',
-  'How do I perform Wudu correctly?',
-  'What is the importance of Salah in daily life?',
-]
-
-function TypingIndicator() {
-  return (
-    <div className="flex items-end gap-2 animate-fade-in">
-      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#064e3b,#047857)' }}>
-        <Bot className="w-3.5 h-3.5 text-white" />
-      </div>
-      <div className="chat-bubble-ai px-4 py-3.5 flex items-center gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }} />
-      </div>
-    </div>
-  )
-}
-
-function MessageBubble({ msg }) {
-  const isUser = msg.role === 'user'
-
-  return (
-    <div className={`flex items-end gap-2 animate-slide-up ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      {/* Avatar */}
-      <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
-        isUser ? 'bg-amber-600' : ''
-      }`} style={!isUser ? { background: 'linear-gradient(135deg,#064e3b,#047857)' } : {}}>
-        {isUser ? <User className="w-3.5 h-3.5 text-white" /> : <Bot className="w-3.5 h-3.5 text-white" />}
-      </div>
-
-      {/* Bubble */}
-      <div className={isUser ? 'chat-bubble-user' : 'chat-bubble-ai'}>
-        {/* Render line-breaks properly */}
-        {(msg.content || '').split('\n').map((line, i) => (
-          <React.Fragment key={i}>
-            {line}
-            {i < msg.content.split('\n').length - 1 && <br />}
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-  )
-}
+import React, { useState } from 'react';
+import api from '../services/api';
+import { Send, Loader2, Bot, User } from 'lucide-react';
 
 export default function AIChat() {
-  const [messages, setMessages] = useState([])  // { role: 'user'|'assistant', content: string }[]
-  const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const bottomRef = useRef(null)
-  const inputRef = useRef(null)
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: 'Assalamu Alaikum! I am your intelligent assistant. Feel free to ask contextual analytical questions regarding your research data sheets.' }
+  ]);
+  const [input, setInput] = useState('');
+  const [sending, setSending] = useState(false);
 
-  // Auto-scroll to bottom on new message
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, loading])
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (!input.trim() || sending) return;
 
-  const sendMessage = useCallback(async (text) => {
-    const trimmed = (text || '').trim()
-    if (!trimmed || loading) return
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setSending(true);
 
-    setError(null)
-    const userMsg = { role: 'user', content: trimmed }
-    const updatedHistory = [...messages, userMsg]
-    setMessages(updatedHistory)
-    setInput('')
-    setLoading(true)
-
-    try {
-      // Send only prior turns as history (exclude latest user msg)
-      const res = await aiApi.chat(trimmed, messages)
-      const data = res.data || {}
-      // Handle both { reply: '...' } and { response: '...' } shapes
-      const replyText = data.reply || data.response || data.content || 'No response received.'
-      setMessages(prev => [...prev, { role: 'assistant', content: replyText }])
-    } catch (err) {
-      setError(err?.message || 'Could not connect to the AI assistant.')
-      // Remove the optimistic user message on failure
-      setMessages(messages)
-    } finally {
-      setLoading(false)
-      inputRef.current?.focus()
-    }
-  }, [messages, loading])
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    sendMessage(input)
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) }
-  }
-
-  const clearChat = () => {
-    setMessages([]); setError(null); setInput('')
-    inputRef.current?.focus()
-  }
-
-  const isEmpty = messages.length === 0
+    api.post('/ai/chat', { message: input })
+      .then(res => {
+        setMessages(prev => [...prev, { role: 'assistant', content: res.data?.response || 'No response captured.' }]);
+      })
+      .catch(err => {
+        setMessages(prev => [...prev, { role: 'assistant', content: 'Connection issue encountered contacting proxy gateway endpoint pipelines.' }]);
+      })
+      .finally(() => setSending(false));
+  };
 
   return (
-    <div className="animate-fade-in flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
+    <div className="max-w-4xl mx-auto h-[75vh] border border-stone-200 bg-white rounded-2xl shadow-sm flex flex-col overflow-hidden animate-fadeIn">
+      {/* Box Header Banner */}
+      <div className="bg-gradient-to-r from-islamic-deep to-emerald-950 p-4 text-white flex items-center space-x-3 shadow-md">
+        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-islamic-amber"><Bot className="w-5 h-5" /></div>
+        <div>
+          <h2 className="text-sm font-bold tracking-wide">Deestream AI Scholar Assistant</h2>
+          <span className="text-xs text-emerald-400 font-medium flex items-center space-x-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Online via Apizio Proxy Pipeline</span></span>
+        </div>
+      </div>
 
-      {/* Header */}
-      <div className="shrink-0 border-b border-stone-100 bg-white/90 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg,#064e3b,#047857)' }}>
-              <Bot className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <p className="font-bold text-emerald-900" style={{ fontFamily: 'Playfair Display,serif' }}>Deestream Assistant</p>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-slate-400">Powered by Gemini · Islamic Knowledge</span>
+      {/* Messages Stream Content Area */}
+      <div className="flex-grow overflow-y-auto p-6 space-y-4 bg-stone-50/50">
+        {messages.map((msg, index) => {
+          const isBot = msg.role === 'assistant';
+          return (
+            <div key={index} className={`flex items-start space-x-3 ${!isBot ? 'flex-row-reverse space-x-reverse' : ''}`}>
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm ${isBot ? 'bg-islamic-emerald text-islamic-amber' : 'bg-islamic-gold text-white'}`}>
+                {isBot ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
+              </div>
+              <div className={`max-w-[75%] p-4 rounded-2xl shadow-sm text-sm leading-relaxed ${isBot ? 'bg-white border border-stone-200 text-stone-800' : 'bg-islamic-deep text-white'}`}>
+                <p className="whitespace-pre-line">{msg.content}</p>
               </div>
             </div>
+          );
+        })}
+        {sending && (
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-islamic-emerald text-islamic-amber flex items-center justify-center shadow-sm"><Bot className="w-4 h-4" /></div>
+            <div className="bg-white border border-stone-200 p-4 rounded-2xl shadow-sm"><Loader2 className="w-4 h-4 animate-spin text-stone-400" /></div>
           </div>
-          {!isEmpty && (
-            <button onClick={clearChat} className="btn-ghost py-1.5 text-xs">
-              <RotateCcw className="w-3.5 h-3.5" /> New Chat
-            </button>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-5">
-
-          {/* Welcome / empty state */}
-          {isEmpty && (
-            <div className="flex flex-col items-center justify-center min-h-64 gap-6 text-center animate-fade-in">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg,#064e3b,#047857)' }}>
-                <Sparkles className="w-7 h-7 text-amber-300" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-emerald-900 mb-2" style={{ fontFamily: 'Playfair Display,serif' }}>
-                  As-salamu alaykum
-                </h2>
-                <p className="text-slate-500 text-sm max-w-sm">
-                  Ask me anything about Islam — Quran, Hadith, fiqh, history, or daily practice.
-                </p>
-              </div>
-
-              {/* Suggested questions */}
-              <div className="w-full max-w-md space-y-2">
-                <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">Suggested questions</p>
-                {SUGGESTED_QUESTIONS.map((q, i) => (
-                  <button
-                    key={i}
-                    onClick={() => sendMessage(q)}
-                    className="w-full text-left px-4 py-3 rounded-xl border border-stone-200 bg-white text-sm text-slate-600 hover:border-emerald-300 hover:text-emerald-800 hover:bg-emerald-50/50 transition-all duration-200"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Message bubbles */}
-          {(messages || []).map((msg, i) => (
-            <MessageBubble key={i} msg={msg} />
-          ))}
-
-          {/* Loading indicator */}
-          {loading && <TypingIndicator />}
-
-          {/* Error */}
-          {error && (
-            <div className="error-banner">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-semibold">Request failed</p>
-                <p className="text-red-700/80 text-xs">{error}</p>
-              </div>
-              <button onClick={() => setError(null)} className="text-red-600 text-xs hover:underline shrink-0">Dismiss</button>
-            </div>
-          )}
-
-          <div ref={bottomRef} />
-        </div>
-      </div>
-
-      {/* Input area */}
-      <div className="shrink-0 border-t border-stone-100 bg-white/95 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4">
-          <form onSubmit={handleSubmit} className="flex gap-3 items-end">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask about Islam… (Enter to send, Shift+Enter for new line)"
-              rows={1}
-              disabled={loading}
-              className="flex-1 px-4 py-3 rounded-2xl border border-stone-200 text-sm text-slate-800 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 transition-all disabled:opacity-60 min-h-[46px] max-h-36 overflow-y-auto"
-              style={{ lineHeight: '1.5' }}
-              onInput={e => {
-                e.target.style.height = 'auto'
-                e.target.style.height = `${Math.min(e.target.scrollHeight, 144)}px`
-              }}
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || loading}
-              className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
-              style={{ background: (!input.trim() || loading) ? '#e7e5e4' : 'linear-gradient(135deg,#064e3b,#047857)' }}
-            >
-              <Send className={`w-4 h-4 ${(!input.trim() || loading) ? 'text-slate-400' : 'text-white'}`} />
-            </button>
-          </form>
-          <p className="text-xs text-slate-400 mt-2 text-center">
-            Responses are AI-generated. Always verify religious rulings with a qualified scholar.
-          </p>
-        </div>
-      </div>
+      {/* Chat input box form bar wrapper */}
+      <form onSubmit={handleSend} className="p-4 border-t border-stone-200 bg-white flex items-center space-x-3">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask a question..."
+          className="flex-grow p-3 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-islamic-emerald transition-colors"
+        />
+        <button type="submit" disabled={!input.trim() || sending} className="p-3 rounded-xl bg-islamic-deep text-islamic-amber hover:bg-emerald-950 transition-colors shadow-md disabled:opacity-50">
+          <Send className="w-4 h-4" />
+        </button>
+      </form>
     </div>
-  )
+  );
 }

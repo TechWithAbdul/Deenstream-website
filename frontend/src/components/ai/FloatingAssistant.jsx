@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, X, Send } from 'lucide-react';
-import { apiService } from '../../services/api';
+
 
 export default function FloatingAssistant() {
   const [isOpen, setIsOpen] = useState(false);
