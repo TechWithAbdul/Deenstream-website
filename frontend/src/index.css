@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #021511;
+  color: #f3f4f6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+.glassmorphic {
+  background: rgba(6, 44, 34, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #d4af37 0%, #f3e5ab 50%, #aa8c2c 100%);
+  -webkit-background-clip: text; /* Vendor prefix */
+  background-clip: text;         /* Standard property (Add this line!) */
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom scrollbars for high fidelity viewports */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #021511;
+}
+::-webkit-scrollbar-thumb {
+  background: #062c22;
+  border-radius: 3px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
