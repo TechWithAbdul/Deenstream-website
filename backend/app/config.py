@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     # ── CORS ───────────────────────────────────────────────────────────────────
     # Comma-separated list of allowed origins, e.g.
     #   ALLOWED_ORIGINS=http://localhost:5173,https://deestream.com
-    ALLOWED_ORIGINS: str = "http://localhost:5173"
+    ALLOWED_ORIGINS: str = "http://localhost:3000/"
 
     # ── HTTP client timeouts (seconds) ─────────────────────────────────────────
     HTTP_CONNECT_TIMEOUT: float = 10.0
