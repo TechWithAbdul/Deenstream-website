@@ -111,21 +111,20 @@ async def get_surah(
     surah_id: Annotated[int, Path(ge=1, le=114, description="Surah number (1–114)")],
     translations: Annotated[
         str,
-        Query(description="Comma-separated translation keys, e.g. 'en,ur'"),
-    ] = "en",
+        Query(description="Translation key, e.g. 'sahih_international' or 'urdu'"),
+    ] = "sahih_international",
 ) -> dict:
     """
-    Fetch a complete surah (all ayahs) with the requested translations.
-    Target Endpoint: /api/quran?surah={surah_id}
+    Fetch a complete surah (all ayahs) with the requested translation.
+    Target Endpoint: /api/quran/surah/{number}
     """
     client = get_ummah_client()
     try:
-        # Changed from f"/quran/surahs/{surah_id}" to the correct query parameter format on "/quran"
+        # 🛠️ FIXED: Matched the path parameter and the singular 'translation' key from your docs image
         response = await client.get(
-            "/quran",
+            f"/quran/surah/{surah_id}",
             params={
-                "surah": surah_id,
-                "translations": translations
+                "translation": translations  # Ummah API expects 'translation' singular
             },
         )
         response.raise_for_status()
@@ -145,9 +144,5 @@ async def get_surah(
         logger.error("Unexpected top-level type for surah %d: %s", surah_id, type(payload))
         raise HTTPException(status_code=502, detail="Unexpected upstream response format.")
 
-    # Log internal structures to help monitor data patterns safely
-    if "ayahs" not in payload and "surah" not in payload:
-        logger.warning("Standard surah data keys missing in surah %d response. Keys: %s", surah_id, list(payload.keys()))
-
-    logger.info("Fetched surah %d (translations=%s).", surah_id, translations)
+    logger.info("Fetched surah %d (translation=%s).", surah_id, translations)
     return payload

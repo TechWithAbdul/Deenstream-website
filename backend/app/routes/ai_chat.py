@@ -117,7 +117,7 @@ async def chat(body: ChatRequest) -> ChatResponse:
         completion = await client.chat.completions.create(
             model=settings.GEMINI_MODEL,
             messages=messages,  # type: ignore[arg-type]
-            max_tokens=1024,
+            max_tokens=4048,
             temperature=0.7,
         )
     except APIStatusError as exc:
