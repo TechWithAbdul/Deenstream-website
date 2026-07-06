@@ -1,0 +1,83 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-family: 'Inter', system-ui, sans-serif; scroll-behavior: smooth; }
+  body { background: #021711; color: #e7f3ee; }
+  [lang="ar"], .arabic-text { font-family: 'Amiri', serif; direction: rtl; text-align: right; }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border transition-all duration-300;
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(197,168,128,0.14);
+  }
+  .card:hover { border-color: rgba(197,168,128,0.35); background: rgba(255,255,255,0.035); }
+
+  .divider-gold { @apply h-px my-6; background: linear-gradient(to right, transparent, rgba(197,168,128,0.4), transparent); }
+
+  .skeleton {
+    background: linear-gradient(90deg, rgba(197,168,128,0.06) 25%, rgba(197,168,128,0.14) 50%, rgba(197,168,128,0.06) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    @apply rounded-lg;
+  }
+
+  .badge-gold {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
+    background: rgba(197,168,128,0.08); color: #c5a880; border: 1px solid rgba(197,168,128,0.3);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 active:scale-95;
+    background: #c5a880; color: #021711;
+  }
+  .btn-primary:hover { background: #d4bc99; }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 active:scale-95;
+    color: #e7f3ee; border: 1px solid rgba(197,168,128,0.25);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.04); border-color: rgba(197,168,128,0.45); }
+
+  .error-banner {
+    @apply flex items-start gap-3 p-4 rounded-xl text-sm;
+    background: rgba(190,30,45,0.08); border: 1px solid rgba(190,30,45,0.3); color: #f3b4ba;
+  }
+
+  .empty-state { @apply flex flex-col items-center justify-center py-20 gap-4 text-center; }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 text-sm rounded-lg transition-all duration-200 outline-none;
+    background: rgba(255,255,255,0.03); color: #e7f3ee; border: 1px solid rgba(197,168,128,0.18);
+  }
+  .input-field:focus { border-color: #c5a880; background: rgba(255,255,255,0.05); }
+  .input-field::placeholder { color: rgba(231,243,238,0.35); }
+
+  .prayer-card { @apply card p-5 flex flex-col items-center gap-2 text-center; }
+
+  .chat-bubble-user {
+    @apply px-4 py-3 rounded-2xl rounded-br-sm text-sm leading-relaxed max-w-xs sm:max-w-md self-end;
+    background: #c5a880; color: #021711;
+  }
+  .chat-bubble-ai {
+    @apply px-4 py-3 rounded-2xl rounded-bl-sm text-sm leading-relaxed max-w-xs sm:max-w-md self-start;
+    background: rgba(255,255,255,0.04); color: #e7f3ee; border: 1px solid rgba(197,168,128,0.15);
+  }
+
+  .ayah-block { @apply card p-5 space-y-4; }
+}
+
+@layer utilities {
+  .arabic-leading { line-height: 2.4; }
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: rgba(197,168,128,0.3) transparent; }
+}
+
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes slideUp { 0% { opacity: 0; transform: translateY(16px); } 100% { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+.animate-slide-up { animation: slideUp 0.4s ease-out; }

@@ -1,0 +1,48 @@
+"""
+app/config.py
+-------------
+Centralised settings loaded from the `.env` file via pydantic-settings.
+All external credentials live here – nothing is hard-coded anywhere else.
+"""
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    # ── Ummah API ──────────────────────────────────────────────────────────────
+    UMMAH_API_KEY: str
+    UMMAH_BASE_URL: str = "https://ummahapi.com/api"
+
+    # ── AI / Gemini (via Apizio OpenAI-compatible gateway) ────────────────────
+<<<<<<< HEAD
+    GEMINI_API_KEY: str = "https://generativelanguage.googleapis.com/v1beta"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
+=======
+    GEMINI_API_KEY: str
+    APIZIO_BASE_URL: str = "https://api.apizio.com/v1"
+    GEMINI_MODEL: str = "gemini-3.1-pro-preview"
+>>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+
+    # ── CORS ───────────────────────────────────────────────────────────────────
+    # Comma-separated list of allowed origins, e.g.
+    ALLOWED_ORIGINS: str = "http://localhost:3000/"
+
+    # ── HTTP client timeouts (seconds) ─────────────────────────────────────────
+    HTTP_CONNECT_TIMEOUT: float = 10.0
+    HTTP_READ_TIMEOUT: float = 30.0
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",         # silently ignore unrecognised env vars
+    )
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        """Return ALLOWED_ORIGINS as a Python list (split on commas)."""
+        return [o.strip() for o in self.ALLOWED_ORIGINS.split(",") if o.strip()]
+
+
+# Module-level singleton – import this everywhere else
+settings = Settings()  # type: ignore[call-arg]
