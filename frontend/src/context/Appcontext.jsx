@@ -8,10 +8,7 @@ const PRAYER_KEYS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']
 function parsePrayerTimes(payload) {
 <<<<<<< HEAD
   const innerData = payload?.data || {}
-  return payload?.times || innerData.prayer_times || innerData.timings || payload?.timings || {}
-=======
-  return payload?.times || payload?.data?.timings || payload?.timings || {}
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+  return payload?.times || innerData.prayer_times || innerData.timings || payload?.timings || {} 
 }
 
 function getNextPrayer(timings) {

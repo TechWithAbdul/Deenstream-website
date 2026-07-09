@@ -49,10 +49,7 @@ function Navbar() {
             <div className="w-9 h-9 rounded-full flex items-center justify-center border" style={{ borderColor: 'rgba(197,168,128,0.4)' }}>
               <Moon className="w-4 h-4" style={{ color: '#c5a880' }} />
             </div>
-            <div className="leading-none">
-              <p className="text-white font-bold text-sm tracking-wide group-hover:text-amber-200 transition-colors">DEESTREAM</p>
-              <p className="text-[10px] tracking-[0.2em]" style={{ color: '#c5a880' }}>AI ENGINE</p>
-            </div>
+            <span className="text-white font-bold">DEESTREAM<span style={{ color: '#c5a880' }}> AI</span></span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
