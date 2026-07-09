@@ -25,17 +25,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/calculations", tags=["Prayer Times"])
 
-<<<<<<< HEAD
-=======
-# All method strings accepted by Ummah API.
-PrayerMethod = Literal[
-    "MWL", "ISNA", "Egypt", "Makkah", "Karachi", "Tehran", "Jafari",
-    "NorthAmerica", "Singapore", "Turkey", "Kuwait", "Qatar", "Dubai",
-    "MoonsightingCommittee", "Russia", "Morocco", "French15", "French18",
-    "Tunisia", "Gulf", "Custom",
-]
 
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
 
 def _raise_from_httpx(exc: httpx.HTTPStatusError, context: str) -> None:
     status = exc.response.status_code
@@ -57,7 +47,6 @@ def _raise_from_httpx(exc: httpx.HTTPStatusError, context: str) -> None:
     raise HTTPException(status_code=502, detail=detail)
 
 
-<<<<<<< HEAD
 # Change the Literal strings to match the full names accepted by Ummah API
 PrayerMethod = Literal[
     "MuslimWorldLeague", "ISNA", "Egyptian", "UmmAlQura", "Karachi", 
@@ -66,8 +55,7 @@ PrayerMethod = Literal[
     "Tunisia", "Morocco", "Jordan", "Palestine"
 ]
 
-=======
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+
 @router.get(
     "/prayer-times",
     summary="Fetch daily prayer times for a location",
@@ -78,16 +66,10 @@ async def get_prayer_times(
     lng: Annotated[float, Query(ge=-180, le=180, description="Longitude of the location")],
     method: Annotated[
         PrayerMethod,
-<<<<<<< HEAD
         Query(description="Calculation method name"),
     ] = "MuslimWorldLeague", # Updated default from "MWL" to "MuslimWorldLeague"
 ) -> dict:
-  
-=======
-        Query(description="Calculation method name (e.g. 'ISNA', 'MWL', 'Makkah')"),
-    ] = "MWL",
-) -> dict:
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+
     """
     Returns today's prayer times (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)
     plus the current Hijri date and timezone, forwarded from Ummah API.
@@ -121,19 +103,12 @@ async def get_prayer_times(
         raise HTTPException(status_code=502, detail="Unexpected upstream response format.")
 
     # Validate that the core times dict is present.
-<<<<<<< HEAD
     data_sec = payload.get("data", {})
     times = payload.get("times") or data_sec.get("prayer_times") or data_sec.get("timings")
     
     if not times:
         logger.warning(
             "Prayer times payload missing expected structures ('times', 'data.prayer_times', or 'data.timings'). "
-=======
-    times = payload.get("times") or payload.get("data", {}).get("timings")
-    if not times:
-        logger.warning(
-            "Prayer times payload missing 'times' or 'data.timings'. "
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
             "Present keys: %s",
             list(payload.keys()),
         )

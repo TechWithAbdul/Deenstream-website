@@ -36,7 +36,6 @@ export const quranApi = {
   getChapters: () => api.get('/quran/chapters'),
   getSurah: (id, translations = 'en') => api.get(`/quran/surah/${id}`, { params: { translations } }),
   getJuz: (num) => api.get(`/quran/juz/${num}`),
-
 }
 
 // ── Hadith ─────────────────────────────────────────────────────────────────
@@ -50,6 +49,7 @@ export const hadithApi = {
 // ── Prayer Times ───────────────────────────────────────────────────────────
 // GET /api/v1/calculations/prayer-times?lat=&lng=&method=
 export const prayerApi = {
+
   // Daily fallback timings from Aladhan
   getTimes: (lat, lng) => 
     axios.get(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=2`),

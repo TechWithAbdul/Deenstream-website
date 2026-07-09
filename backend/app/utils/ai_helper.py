@@ -1,12 +1,20 @@
-import os
-import json
-import httpx
-from typing import List, Dict, Any, AsyncGenerator
-from app.config import settings
+"""
+app/utils/ai_helper.py
+----------------------
+Stream wrapper targeting the OpenAI-compatible Groq endpoint.
+"""
+
+import logging
+from typing import List, Dict, AsyncGenerator
+from app.utils.api_handler import get_openai_client
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
-<<<<<<< HEAD
-    "You are DeenStream AI, an advanced, highly respectful, and context-aware Islamic AI assistant engineered for deep academic clarity, spiritual empathy, and balanced insight. Your goal is to deliver beautiful, thoroughly explanatory, and structured answers that inspire engagement while remaining firmly anchored in authentic text.\n\n"
+    "You are DeenStream AI, an advanced, highly respectful, and context-aware Islamic AI assistant "
+    "engineered for deep academic clarity, spiritual empathy, and balanced insight. Your goal is to "
+    "deliver beautiful, thoroughly explanatory, and structured answers that inspire engagement while "
+    "remaining firmly anchored in authentic text.\n\n"
     "Follow these strict operational directives for every response:\n\n"
     "1. TONE & EXPERIENCE:\n"
     "   - Exude warmth, deep respect, and intellectual sophistication.\n"
@@ -23,40 +31,27 @@ SYSTEM_PROMPT = (
     "4. OBJECTIVITY & NEUTRALITY:\n"
     "   - Present mainstream Islamic scholarship with absolute poise and neutrality.\n"
     "   - Avoid taking dogmatic sides on nuanced matters; instead, clearly outline the respected perspectives with equal weight and respect, avoiding any judgmental or exclusionary language."
-=======
-    "You are a highly respectful, knowledgeable, and context-aware Islamic AI assistant. "
-    "Answer user queries concisely, accurately referencing the Holy Quran and authentic Hadith text where applicable. "
-    "Maintain neutrality, and provide citations professionally."
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
 )
 
-async def stream_completion_openai(messages: List[Dict[str,str]]) -> AsyncGenerator[str, None]:
-    """Stream completion from OpenAI v1 chat completions endpoint (stream=True).
-    Yields decoded text chunks as they arrive.
+async def stream_completion_openai(messages: List[Dict[str, str]]) -> AsyncGenerator[str, None]:
     """
-    api_key = settings.OPENAI_API_KEY
-    if not api_key:
-        raise RuntimeError("OPENAI_API_KEY not configured")
-    url = "https://api.apizio.com/v1"
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-    payload = {"model":"gpt-4o-mini","messages": [{"role":"system","content": SYSTEM_PROMPT}] + messages, "stream": True}
-    async with httpx.AsyncClient(timeout=None) as client:
-        async with client.stream("POST", url, headers=headers, json=payload) as resp:
-            resp.raise_for_status()
-            async for line in resp.aiter_lines():
-                if not line:
-                    continue
-                # OpenAI stream sends lines like: data: {json}\n
-                if line.startswith("data:"):
-                    data = line[len("data:"):].strip()
-                    if data == "[DONE]":
-                        break
-                    try:
-                        obj = json.loads(data)
-                        delta = obj.get("choices", [])[0].get("delta", {})
-                        content = delta.get("content")
-                        if content:
-                            yield content
-                    except json.JSONDecodeError:
-                        continue
-    raise RuntimeError("No AI provider API key configured.")
+    Streams response tokens using the structured OpenAI client wrapper routed to Groq.
+    """
+    try:
+        ai_client = get_openai_client()
+        formatted_messages = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
+
+        response_stream = await ai_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",  
+            messages=formatted_messages,
+            stream=True
+        )
+
+        async for chunk in response_stream:
+            content = chunk.choices[0].delta.content
+            if content:
+                yield content
+
+    except Exception as e:
+        logger.error(f"Error encountered during stream generation: {str(e)}")
+        raise RuntimeError(f"AI Streaming Generation failed: {str(e)}")

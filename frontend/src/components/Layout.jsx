@@ -1,28 +1,21 @@
 // src/components/Layout.jsx
 import React, { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
-<<<<<<< HEAD
-import { Home, BookOpen, Scroll, Heart, MessageSquare, Menu, X, Moon, Clock } from 'lucide-react'
-=======
-import { Home, BookOpen, Scroll, Heart, MessageSquare, Menu, X, Moon } from 'lucide-react'
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
-
+import { Home, BookOpen, Scroll, Heart, MessageSquare, Menu, X, Moon, Clock } from 'lucide-react' 
 const NAV_ITEMS = [
   { to: '/',        label: 'Home',           icon: Home },
   { to: '/quran',    label: 'Noble Quran',    icon: BookOpen },
   { to: '/hadith',   label: 'Hadith Library', icon: Scroll },
-<<<<<<< HEAD
-  { to: '/prayers',  label: 'Prayer Times',   icon: Clock },
-=======
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+  { to: '/prayers',  label: 'Prayer Times',   icon: Clock }, 
   { to: '/duas',     label: 'Supplications',  icon: Heart },
-  { to: '/ai-chat',  label: 'AI Alim',        icon: MessageSquare },
+  { to: '/ai-chat',  label: 'AI Companion',   icon: MessageSquare },
 ]
 
 function Navbar() {
   const [open, setOpen] = useState(false)
   return (
-<<<<<<< HEAD
+
+
     <header className="relative top-0 z-80" style={{ background: 'rgba(2,23,17,0.92)', borderColor: 'rgba(197,168,128,0.15)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
@@ -40,20 +33,7 @@ function Navbar() {
       </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-0">
-=======
-    <header className="sticky top-0 z-50 backdrop-blur-md border-b" style={{ background: 'rgba(2,23,17,0.92)', borderColor: 'rgba(197,168,128,0.15)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2.5 group" onClick={() => setOpen(false)}>
-            <div className="w-9 h-9 rounded-full flex items-center justify-center border" style={{ borderColor: 'rgba(197,168,128,0.4)' }}>
-              <Moon className="w-4 h-4" style={{ color: '#c5a880' }} />
-            </div>
-            <span className="text-white font-bold">DEESTREAM<span style={{ color: '#c5a880' }}> AI</span></span>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-1">
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+          <nav className="hidden lg:flex gap-1">
             {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
               <NavLink key={to} to={to} end={to === '/'}
                 className={({ isActive }) =>
@@ -67,6 +47,9 @@ function Navbar() {
               </NavLink>
             ))}
           </nav>
+
+   
+          
 
           <button onClick={() => setOpen(!open)} className="lg:hidden p-2 rounded-lg text-emerald-200 hover:bg-white/5 transition-colors" aria-label="Toggle menu">
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -134,11 +117,7 @@ function Footer() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t" style={{ borderColor: 'rgba(197,168,128,0.1)' }}>
-<<<<<<< HEAD
-          <p className="text-emerald-100/30 text-xs">© 2026 DeenStream AI. Developed By <a href="https://www.linkedin.com/in/abdul-rehman-460b59353/" target="_blank" rel="noopener noreferrer" className="text-[#c5a880] hover:underline">Abdul Rehman</a>.</p>
-=======
-          <p className="text-emerald-100/30 text-xs">© 2026 DeenStream AI · Bismillāhi ar-Raḥmāni ar-Raḥīm</p>
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
+          <p className="text-emerald-100/30 text-xs">© 2026 DeenStream AI. Developed By <a href="https://www.linkedin.com/in/abdul-rehman-460b59353/" target="_blank" rel="noopener noreferrer" className="text-[#c5a880] hover:underline">Abdul Rehman</a>.</p> 
           <p className="text-xs" style={{ color: 'rgba(197,168,128,0.4)', fontFamily: 'Amiri,serif' }} lang="ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
         </div>
       </div>

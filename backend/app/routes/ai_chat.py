@@ -2,17 +2,7 @@
 app/routes/ai_chat.py
 ----------------------
 Islamic AI Chatbot endpoint:
-  POST /ai/chat  – send a user message and receive a Gemini-powered response
-
-The OpenAI SDK is pointed at the Apizio gateway which exposes Gemini models
-through an OpenAI-compatible interface.
-
-Design decisions:
-  • System prompt constrains the model to Islamic content only.
-  • Multi-turn conversation history is accepted from the client so context
-    is preserved across turns without storing server-side state.
-  • Streaming is NOT enabled here; for streaming add `stream=True` and
-    use StreamingResponse – straightforward to add later.
+  POST /ai/chat  – send a user message and receive a Groq-powered response
 """
 
 from __future__ import annotations
@@ -40,16 +30,11 @@ class ChatMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    """
-    Full request body sent by the frontend.
-
-    `history` may be empty for the first turn; the backend will prepend
-    the system prompt automatically.
-    """
+    """Full request body sent by the frontend."""
     message: str = Field(..., min_length=1, max_length=4000, description="Latest user message")
     history: list[ChatMessage] = Field(
         default_factory=list,
-        max_length=40,                          # cap context to ~20 turns
+        max_length=40,
         description="Previous turns in the conversation",
     )
 
@@ -92,12 +77,16 @@ _SYSTEM_PROMPT = (
 async def chat(body: ChatRequest) -> ChatResponse:
     """
     Accepts a user message plus optional prior conversation history,
-    forwards everything to Gemini (via Apizio), and returns the reply.
-
-    The frontend is responsible for maintaining and re-sending `history`
-    on each turn – this keeps the backend stateless.
+    forwards everything to Groq, and returns the reply.
     """
-    client: AsyncOpenAI = get_openai_client()
+    try:
+        client: AsyncOpenAI = get_openai_client()
+    except RuntimeError as exc:
+        logger.error("AI client configuration error: %s", exc)
+        raise HTTPException(
+            status_code=503,
+            detail=str(exc),
+        ) from exc
 
     # Build the messages list: system → history → latest user message.
     messages: list[dict[str, str]] = [{"role": "system", "content": _SYSTEM_PROMPT}]
@@ -113,9 +102,12 @@ async def chat(body: ChatRequest) -> ChatResponse:
         len(body.message),
     )
 
+    # Use Groq's high-speed production model identifier
+    target_model = "llama-3.3-70b-versatile"
+
     try:
         completion = await client.chat.completions.create(
-            model=settings.GEMINI_MODEL,
+            model=target_model,
             messages=messages,  # type: ignore[arg-type]
             max_tokens=4048,
             temperature=0.7,
@@ -123,17 +115,22 @@ async def chat(body: ChatRequest) -> ChatResponse:
     except APIStatusError as exc:
         status = exc.status_code
         logger.error(
-            "Apizio/Gemini API error %d: %s", status, exc.message
+            "Groq API error %d: %s", status, exc.message
         )
         if status == 401:
             raise HTTPException(
                 status_code=502,
-                detail="AI service rejected the API key (401). Check GEMINI_API_KEY.",
+                detail="AI service rejected the API key (401). Check GROQ_API_KEY.",
             )
         if status == 429:
-            raise HTTPException(
-                status_code=429,
-                detail="AI service rate-limit reached. Please wait a moment and retry.",
+            logger.warning("AI provider rate-limit reached for chat request.")
+            return ChatResponse(
+                reply=(
+                    "The AI service is currently receiving too many requests. "
+                    "Please wait a moment and try again."
+                ),
+                model=target_model,
+                finish_reason="rate_limited",
             )
         if status == 400:
             raise HTTPException(
@@ -145,7 +142,7 @@ async def chat(body: ChatRequest) -> ChatResponse:
             detail=f"AI service returned an error ({status}): {exc.message}",
         )
     except APIConnectionError as exc:
-        logger.error("Could not connect to Apizio gateway: %s", exc)
+        logger.error("Could not connect to Groq gateway: %s", exc)
         raise HTTPException(
             status_code=503,
             detail="Could not connect to the AI service. Network error.",
@@ -163,26 +160,15 @@ async def chat(body: ChatRequest) -> ChatResponse:
         finish_reason: str | None = choice.finish_reason
     except (IndexError, AttributeError) as exc:
         logger.error(
-            "Unexpected completion structure from Apizio: %s | raw: %s", exc, completion
+            "Unexpected completion structure from Groq: %s | raw: %s", exc, completion
         )
         raise HTTPException(
             status_code=502,
             detail="AI service returned an unrecognisable response structure.",
         )
 
-    if not reply_text.strip():
-        logger.warning(
-            "AI returned an empty reply. finish_reason=%s | model=%s",
-            finish_reason,
-            completion.model,
-        )
-
-    logger.info(
-        "AI chat response: %d chars, finish_reason=%s.", len(reply_text), finish_reason
-    )
-
     return ChatResponse(
         reply=reply_text,
-        model=completion.model or settings.GEMINI_MODEL,
+        model=completion.model or target_model,
         finish_reason=finish_reason,
     )

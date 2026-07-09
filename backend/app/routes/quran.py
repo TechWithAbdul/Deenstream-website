@@ -145,7 +145,6 @@ async def get_surah(
         raise HTTPException(status_code=502, detail="Unexpected upstream response format.")
 
     logger.info("Fetched surah %d (translation=%s).", surah_id, translations)
-<<<<<<< HEAD
     return payload
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -198,6 +197,4 @@ async def get_juz(
         logger.warning("Juz %d: no 'ayahs'/'verses' key. Present keys: %s", juz_number, list(payload.keys()))
 
     logger.info("Fetched juz %d from Ummah API.", juz_number)
-=======
->>>>>>> 1073f45ff56105adf9d83ba45c3ffb5e8aadc3fd
     return payload
