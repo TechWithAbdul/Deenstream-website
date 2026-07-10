@@ -14,6 +14,20 @@ class Settings(BaseSettings):
     UMMAH_API_KEY: str
     UMMAH_BASE_URL: str = "https://ummahapi.com/api"
 
+    @field_validator("UMMAH_BASE_URL", mode="before")
+    @classmethod
+    def validate_ummah_base_url(cls, value: object) -> str:
+        if not isinstance(value, str):
+            raise ValueError("UMMAH_BASE_URL must be a string URL.")
+        sanitized = value.strip()
+        if sanitized.endswith("/"):
+            sanitized = sanitized[:-1]
+        if "api.ummah.com/v1" in sanitized:
+            raise ValueError(
+                "UMMAH_BASE_URL must be https://ummahapi.com/api, not https://api.ummah.com/v1."
+            )
+        return sanitized
+
     # ── AI / Gemini (via Apizio OpenAI-compatible gateway) ────────────────────
 
     GEMINI_API_KEY: str | None = None
