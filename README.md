@@ -65,4 +65,4 @@ This architecture was not engineered to pad a resume, build an algorithmic brand
 
 We invite you to step away from the internet's noise, explore the live platform completely, and allow it to bring a sense of quiet stillness back to your day.
 
-✨ **Experience the Live Sanctuary:** [Insert your Vercel Link]
+✨ **Experience the Live Sanctuary:** https://deenstream-website-navy.vercel.app/
