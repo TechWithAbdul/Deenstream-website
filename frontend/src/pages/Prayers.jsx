@@ -1,7 +1,7 @@
 // src/pages/Prayers.jsx
 import React, { useState, useEffect, useMemo } from 'react'
 import { Clock, MapPin, RefreshCw, AlertCircle, Sun, Sunrise, Sunset, Moon, Star, Compass, Info, Calendar, Flame, ShieldAlert, Heart, ChevronDown } from 'lucide-react'
-import { useApp } from '../context/AppContext'
+import { useApp } from '../context/Appcontext.jsx'
 
 const METHODS = [
   { value: 'MuslimWorldLeague', label: 'Muslim World League' },
