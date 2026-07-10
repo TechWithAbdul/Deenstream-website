@@ -71,7 +71,7 @@ function FullAudioPlayer({ audioUrl, title, subtitle }) {
           controls
           preload="metadata"
           src={audioUrl}
-          className="w-full sm:w-[280px] h-9 rounded-lg"
+          className="w-full sm:w-[200px] h-9 rounded-lg"
           style={{ colorScheme: 'dark' }}
         />
       </div>
