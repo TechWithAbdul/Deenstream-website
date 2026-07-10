@@ -7,7 +7,7 @@ import Quran from './pages/Quran'
 import Hadith from './pages/Hadith'
 import Prayers from './pages/Prayers'
 import Duas from './pages/Duas'
-import AIChat from './pages/AiChat'
+import AIChat from './pages/Aichat'
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 
 // 404 view
